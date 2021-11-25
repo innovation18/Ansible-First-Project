@@ -5,7 +5,7 @@
     },
     {
         "ParameterKey": "AMI",
-        "ParameterValue": "ami-013a129d325529d4d"
+        "ParameterValue": "ami-09889d8d54f9e0a0e"
     },
     {
         "ParameterKey": "KeyPair",
