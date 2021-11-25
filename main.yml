@@ -1,0 +1,11 @@
+- hosts: webserver
+  user: ec2-user
+
+  tasks:
+    - name: "isntalling and configuring Apache"
+      shell: |
+        # yum update -y
+        # yum install -y httpd
+        systemctl start httpd
+      register: shell_output
+      become: true
