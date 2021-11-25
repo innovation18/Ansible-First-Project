@@ -3,7 +3,7 @@ version: 2.1
 jobs:
   bash-hello:
     docker:
-      - image: alpine-bash
+      - image: bash:5.1.12
     steps:
       - checkout
       - run:
