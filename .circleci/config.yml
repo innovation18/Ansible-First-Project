@@ -3,7 +3,7 @@ version: 2.1
 jobs:
   bash-hello:
     docker:
-      - image: circleci/bash:5.1.12
+      - image: alpine-bash
     steps:
       - checkout
       - run:
