@@ -1,0 +1,19 @@
+version: 2.1
+
+jobs:
+  bash-hello:
+    docker:
+      - image: bash:5.1.12
+    steps:
+      - checkout
+      - run:
+          name: "hello usig bash docker image"
+          # The initial pipe, |, indicates that there will be more than one line of shell commands.
+          command: |
+            echo 'Hey Hello!'
+            echo 'Hows it going!'
+
+workflows:
+  say-workflow:
+    jobs:
+      - bash-hello
