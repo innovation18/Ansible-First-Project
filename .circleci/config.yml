@@ -25,7 +25,7 @@ jobs:
     steps:
       - checkout
       - create-stack:
-          stack-name: phoenix
+          stack-name: zenith
           file-name: public-ec2-instance.yml
           parameter-file-name: params.json
       # - run:
@@ -42,7 +42,16 @@ jobs:
       - image: amazon/aws-cli
     steps:
       - checkout
-      - run: aws ec2 describe-instances --query 'Reservations[*].Instances[*].PublicIpAddress' --output text >> inventory.txt
+      - run:
+          name: "collect hosts IPs"
+          command: |
+            echo "[WEB]" > inventory.txt
+            aws ec2 describe-instances --query 'Reservations[*].Instances[*].PublicIpAddress' --output text >> inventory.txt
+      - persist_to_workspace:
+          root: ~/
+          paths:
+            - inventory.txt
+      - run:
 
   configure_infrastructure:
     docker:
@@ -56,10 +65,12 @@ jobs:
           command: |
             # install the dependencies needed for your playbook
             apk add --update ansible
+      - attach_workspace:
+          at: ~/
       - run:
           name: Configure server
           command: |
-            ansible-playbook -i inventory.txt main.yml
+            ansible-playbook -i ~/inventory.txt main.yml
 
 workflows:
   create-stack-workflow:
