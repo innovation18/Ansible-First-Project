@@ -55,7 +55,7 @@ jobs:
 
   configure_infrastructure:
     docker:
-      - image: amazon/aws-cli
+      - image: bash:5.0-alpine3.14
     steps:
       - checkout
       - add_ssh_keys:
