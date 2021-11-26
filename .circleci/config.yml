@@ -1,19 +1,41 @@
 version: 2.1
 
+commands:
+  create-stack:
+    description: This command is to create-stack
+    parameters:
+      stack-name:
+        default: "phoenix"
+        type: string
+      file-name:
+        type: string
+      parameter-file-name:
+        type: string
+    steps:
+      - run: aws cloudformation create-stack \
+      --stack-name << parameters.stack-name >> \
+      --template-body file://<< parameters.file-name >> \
+      --parameters file://<< parameters.parameter-file-name >> \
+      --region=us-west-2
+
 jobs:
   create-infrastructure:
     docker:
       - image: amazon/aws-cli
     steps:
       - checkout
-      - run:
-          name: "create-stack"
-          command: |
-            aws cloudformation create-stack \
-            --stack-name phoenix-stack \
-            --template-body file://public-ec2-instance.yml \
-            --parameters file://params.json \
-            --region=us-west-2
+      - create-stack:
+          stack-name: "phoenix"
+          file-name: "public-ec2-instance.yml"
+          parameter-file-name: "params.json"
+      # - run:
+      #     name: "create-stack"
+      #     command: |
+      #       aws cloudformation create-stack \
+      #       --stack-name phoenix-stack \
+      #       --template-body file://public-ec2-instance.yml \
+      #       --parameters file://params.json \
+      #       --region=us-west-2
 
 workflows:
   say-workflow:
