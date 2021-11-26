@@ -1,0 +1,21 @@
+version: 2.1
+
+jobs:
+  create-infrastructure:
+    docker:
+      - image: amazon/aws-cli
+    steps:
+      - checkout
+      - run:
+          name: "create-stack"
+          command: |
+            aws cloudformation create-stack \
+            --stack-name phoenix-stack \
+            --template-body file://public-ec2-instance.yml \
+            --parameters file://params.json \
+            --region=us-west-2
+
+workflows:
+  say-workflow:
+    jobs:
+      - create-infrastructure
