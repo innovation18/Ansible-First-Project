@@ -25,7 +25,7 @@ jobs:
     steps:
       - checkout
       - create-stack:
-          stack-name: zenith
+          stack-name: polarised
           file-name: public-ec2-instance.yml
           parameter-file-name: params.json
       # - run:
