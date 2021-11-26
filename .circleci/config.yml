@@ -37,6 +37,13 @@ jobs:
       #       --parameters file://params.json \
       #       --region=us-west-2
 
+  collect-hosts-to-configure:
+    docker:
+      - image: amazon/aws-cli
+    steps:
+      - checkout
+      - run: aws ec2 describe-instances --query 'Reservations[*].Instances[*].PublicIpAddress' --output text >> inventory.txt
+
   configure_infrastructure:
     docker:
       - image: python:3.7-alpine3.11
@@ -58,6 +65,10 @@ workflows:
   create-stack-workflow:
     jobs:
       - create-infrastructure
+      - collect-hosts-to-configure:
+          requires:
+            - create-infrastructure
       - configure_infrastructure:
           requires:
             - create-infrastructure
+            - collect-hosts-to-configure
