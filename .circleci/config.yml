@@ -37,7 +37,27 @@ jobs:
       #       --parameters file://params.json \
       #       --region=us-west-2
 
+  configure_infrastructure:
+    docker:
+      - image: python:3.7-alpine3.11
+    steps:
+      - checkout
+      - add_ssh_keys:
+          fingerprints: ["8e:4a:81:0a:1e:57:8a:36:00:d8:dd:11:94:37:04:06"]
+      - run:
+          name: Install dependencies
+          command: |
+            # install the dependencies needed for your playbook
+            apk add --update ansible
+      - run:
+          name: Configure server
+          command: |
+            ansible-playbook -i inventory.txt main.yml
+
 workflows:
-  say-workflow:
+  create-stack-workflow:
     jobs:
       - create-infrastructure
+      - configure_infrastructure:
+          requires:
+            - create-infrastructure
