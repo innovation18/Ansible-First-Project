@@ -47,6 +47,7 @@ jobs:
           command: |
             sleep 20
             echo "[WEB]" > ~/inventory.txt
+            aws ec2 describe-instances --query 'Reservations[*].Instances[*].PublicIpAddress' --output text
             aws ec2 describe-instances --query 'Reservations[*].Instances[*].PublicIpAddress' --output text >> ~/inventory.txt
             cat ~/inventory.txt
       - run: yum install -y tar gzip
