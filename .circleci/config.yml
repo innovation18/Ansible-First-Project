@@ -5,7 +5,7 @@ commands:
     description: This command is to create-stack
     parameters:
       stack-name:
-        default: "phoenix"
+        default: phoenix
         type: string
       file-name:
         type: string
@@ -13,10 +13,10 @@ commands:
         type: string
     steps:
       - run: aws cloudformation create-stack \
-              --stack-name << parameters.stack-name >> \
-              --template-body file://<< parameters.file-name >> \
-              --parameters file://<< parameters.parameter-file-name >> \
-              --region=us-west-2
+      --stack-name << parameters.stack-name >> \
+      --template-body file://<< parameters.file-name >> \
+      --parameters file://<< parameters.parameter-file-name >> \
+      --region=us-west-2
 
 jobs:
   create-infrastructure:
@@ -25,9 +25,9 @@ jobs:
     steps:
       - checkout
       - create-stack:
-          stack-name: "phoenix"
-          file-name: "public-ec2-instance.yml"
-          parameter-file-name: "params.json"
+          stack-name: phoenix
+          file-name: public-ec2-instance.yml
+          parameter-file-name: params.json 
       # - run:
       #     name: "create-stack"
       #     command: |
