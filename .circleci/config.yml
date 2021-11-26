@@ -51,7 +51,6 @@ jobs:
           root: ~/
           paths:
             - inventory.txt
-      - run:
 
   configure_infrastructure:
     docker:
