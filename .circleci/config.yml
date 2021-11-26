@@ -45,8 +45,8 @@ jobs:
       - run:
           name: "collect hosts IPs"
           command: |
-            echo "[WEB]" > inventory.txt
-            aws ec2 describe-instances --query 'Reservations[*].Instances[*].PublicIpAddress' --output text >> inventory.txt
+            echo "[WEB]" > ~/inventory.txt
+            aws ec2 describe-instances --query 'Reservations[*].Instances[*].PublicIpAddress' --output text >> ~/inventory.txt
       - run: yum install -y tar gzip
       - persist_to_workspace:
           root: ~/
