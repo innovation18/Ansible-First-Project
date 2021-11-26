@@ -65,7 +65,7 @@ jobs:
           command: |
             # install the dependencies needed for your playbook
             apk add --update ansible
-      - run: yum install -y tar gzip
+      - run: apk add tar
       - attach_workspace:
           at: ~/
       - run:
