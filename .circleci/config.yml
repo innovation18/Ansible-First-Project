@@ -25,7 +25,7 @@ jobs:
     steps:
       - checkout
       - create-stack:
-          stack-name: my-stack
+          stack-name: my-stack1
           file-name: public-ec2-instance.yml
           parameter-file-name: params.json
       # - run:
