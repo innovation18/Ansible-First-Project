@@ -12,6 +12,7 @@ jobs:
             aws cloudformation create-stack \
             --stack-name phoenix-stack \
             --template-body file:../public-ec2-instance.yml  \
+            --parameters file:../params.json \
             --region=us-west-2
 
 workflows:
