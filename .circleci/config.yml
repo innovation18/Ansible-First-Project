@@ -25,7 +25,7 @@ jobs:
     steps:
       - checkout
       - create-stack:
-          stack-name: polz
+          stack-name: my-stack
           file-name: public-ec2-instance.yml
           parameter-file-name: params.json
       # - run:
@@ -55,7 +55,7 @@ jobs:
 
   configure_infrastructure:
     docker:
-      - image: cimg/base:stable
+      - image: amazon/aws-cli
     steps:
       - checkout
       - add_ssh_keys:
