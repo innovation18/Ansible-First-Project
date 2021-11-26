@@ -25,7 +25,7 @@ jobs:
     steps:
       - checkout
       - create-stack:
-          stack-name: phoenix
+          stack-name: polarised
           file-name: public-ec2-instance.yml
           parameter-file-name: params.json
       # - run:
@@ -37,7 +37,54 @@ jobs:
       #       --parameters file://params.json \
       #       --region=us-west-2
 
+  collect-hosts-to-configure:
+    docker:
+      - image: amazon/aws-cli
+    steps:
+      - checkout
+      - run:
+          name: "collect hosts IPs"
+          command: |
+            sleep 130
+            echo "[WEB]" > ~/inventory.txt
+            aws ec2 describe-instances --query 'Reservations[*].Instances[*].PublicIpAddress' --output text >> ~/inventory.txt
+            cat ~/inventory.txt
+      - run: yum install -y tar gzip
+      - persist_to_workspace:
+          root: ~/
+          paths:
+            - inventory.txt
+
+  configure_infrastructure:
+    docker:
+      - image: python:3.7-alpine3.11
+      # - image: bash:5.0-alpine3.14
+    steps:
+      - checkout
+      - add_ssh_keys:
+          fingerprints: ["85:3f:c9:33:18:a1:fd:67:4f:c4:5f:6a:77:0a:21:d9"]
+      - run:
+          name: Install dependencies
+          command: |
+            # install the dependencies needed for your playbook
+            apk add --update ansible
+      # - run: apk add tar
+      - attach_workspace:
+          at: ~/
+      - run:
+          name: Configure server
+          command: |
+            cat ~/inventory.txt
+            ansible-playbook -i ~/inventory.txt main.yml
+
 workflows:
-  say-workflow:
+  create-stack-workflow:
     jobs:
       - create-infrastructure
+      - collect-hosts-to-configure:
+          requires:
+            - create-infrastructure
+      - configure_infrastructure:
+          requires:
+            - create-infrastructure
+            - collect-hosts-to-configure

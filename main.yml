@@ -1,4 +1,4 @@
-- hosts: webserver
+- hosts: WEB
   user: ubuntu
   roles:
     - apache
