@@ -45,7 +45,7 @@ jobs:
       - run:
           name: "collect hosts IPs"
           command: |
-            sleep 200
+            sleep 130
             echo "[WEB]" > ~/inventory.txt
             aws ec2 describe-instances --query 'Reservations[*].Instances[*].PublicIpAddress' --output text >> ~/inventory.txt
             cat ~/inventory.txt
@@ -57,7 +57,8 @@ jobs:
 
   configure_infrastructure:
     docker:
-      - image: bash:5.0-alpine3.14
+      - image: python:3.7-alpine3.11
+      # - image: bash:5.0-alpine3.14
     steps:
       - checkout
       - add_ssh_keys:
@@ -67,7 +68,7 @@ jobs:
           command: |
             # install the dependencies needed for your playbook
             apk add --update ansible
-      - run: apk add tar
+      # - run: apk add tar
       - attach_workspace:
           at: ~/
       - run:
