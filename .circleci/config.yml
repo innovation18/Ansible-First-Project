@@ -1,5 +1,19 @@
 version: 2.1
 
+commands:
+  create-stack:
+    description: This command is to create-stack
+    parameters:
+      stack-name:
+        default: "phoenix"
+        type: string
+      file-name:
+        type: string
+      parameter-file-name:
+        type: string
+    steps:
+      - run: aws cloudformation create-stack --stack-name << stack-name >> --template-body file://<< file-name >>  --parameters file://<< parameter-file-name >> --region=us-west-2 --profile phoenix
+
 jobs:
   bash-hello:
     docker:
@@ -7,8 +21,7 @@ jobs:
     steps:
       - checkout
       - run:
-          name: "hello usig bash docker image"
-          # The initial pipe, |, indicates that there will be more than one line of shell commands.
+          name: "hello using bash docker image"
           command: |
             echo 'Hey Hello!'
             echo 'Hows it going!'
