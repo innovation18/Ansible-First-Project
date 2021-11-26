@@ -46,7 +46,7 @@ jobs:
           name: "collect hosts IPs"
           command: |
             echo "[WEB]" > ~/inventory.txt
-            aws ec2 describe-instances --query 'Reservations[*].Instances[*].PublicIpAddress' --output text >> ~/inventory.txt
+            # aws ec2 describe-instances --query 'Reservations[*].Instances[*].PublicIpAddress' --output text >> ~/inventory.txt
       - run: yum install -y tar gzip
       - persist_to_workspace:
           root: ~/
@@ -71,7 +71,8 @@ jobs:
       - run:
           name: Configure server
           command: |
-            ansible-playbook -i ~/inventory.txt main.yml
+            cat ~/inventory.txt
+            # ansible-playbook -i ~/inventory.txt main.yml
 
 workflows:
   create-stack-workflow:
