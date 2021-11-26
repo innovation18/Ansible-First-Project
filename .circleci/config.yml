@@ -12,11 +12,11 @@ commands:
       parameter-file-name:
         type: string
     steps:
-      - run: aws cloudformation create-stack \
-          --stack-name << parameters.stack-name >> \
-          --template-body file://<< parameters.file-name >> \
-          --parameters file://<< parameters.parameter-file-name >> \
-          --region=us-west-2
+      - run: aws cloudformation create-stack 
+              --stack-name << parameters.stack-name >> 
+              --template-body file://<< parameters.file-name >> 
+              --parameters file://<< parameters.parameter-file-name >> 
+              --region=us-west-2
 
 jobs:
   create-infrastructure:
