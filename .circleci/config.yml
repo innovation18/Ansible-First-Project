@@ -25,7 +25,7 @@ jobs:
     steps:
       - checkout
       - create-stack:
-          stack-name: zenith
+          stack-name: polz
           file-name: public-ec2-instance.yml
           parameter-file-name: params.json
       # - run:
@@ -55,7 +55,7 @@ jobs:
 
   configure_infrastructure:
     docker:
-      - image: python:3.7-alpine3.11
+      - image: cimg/base:stable
     steps:
       - checkout
       - add_ssh_keys:
