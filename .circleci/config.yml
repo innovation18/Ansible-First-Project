@@ -25,7 +25,7 @@ jobs:
     steps:
       - checkout
       - create-stack:
-          stack-name: zenith
+          stack-name: polarised
           file-name: public-ec2-instance.yml
           parameter-file-name: params.json
       # - run:
@@ -47,6 +47,7 @@ jobs:
           command: |
             echo "[WEB]" > inventory.txt
             aws ec2 describe-instances --query 'Reservations[*].Instances[*].PublicIpAddress' --output text >> inventory.txt
+      - run: yum install -y tar gzip
       - persist_to_workspace:
           root: ~/
           paths:
@@ -64,6 +65,7 @@ jobs:
           command: |
             # install the dependencies needed for your playbook
             apk add --update ansible
+      - run: yum install -y tar gzip
       - attach_workspace:
           at: ~/
       - run:
