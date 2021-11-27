@@ -4,19 +4,26 @@ commands:
   create-stack:
     description: This command is to create-stack
     parameters:
-      stack-name:
-        default: phoenix
-        type: string
+      # stack-name:
+      #   default: phoenix
+      #   type: string
       file-name:
         type: string
       parameter-file-name:
         type: string
     steps:
       - run: aws cloudformation create-stack
-          --stack-name << parameters.stack-name >>
+          --stack-name phoenix-${CIRCLE_WORKFLOW_ID}
           --template-body file://<< parameters.file-name >>
           --parameters file://<< parameters.parameter-file-name >>
           --region=us-west-2
+
+  destroy-stack:
+    steps:
+      - run:
+          when: on_fail
+          command: |
+            aws cloudformation delete-stack --stack-name phoenix-${CIRCLE_WORKFLOW_ID}
 
 jobs:
   create-infrastructure:
@@ -25,7 +32,7 @@ jobs:
     steps:
       - checkout
       - create-stack:
-          stack-name: polarised
+          # stack-name: polarised
           file-name: public-ec2-instance.yml
           parameter-file-name: params.json
       # - run:
@@ -77,6 +84,25 @@ jobs:
             cat ~/inventory.txt
             ansible-playbook -i ~/inventory.txt main.yml
 
+  smoke-test:
+    docker:
+      - image: alpine:latest
+    steps:
+      - attach_workspace:
+          at: ~/
+      - run: apk add --update curl
+      - run:
+          name: Test Site
+          command: |
+            if cat ~/inventory.txt | tail -1 | xargs curl -s --head | head -1 | grep 200
+            then 
+              return 0
+            else
+              echo "You No Good!!!" 
+              return 1
+            fi
+      - destroy-stack
+
 workflows:
   create-stack-workflow:
     jobs:
@@ -88,3 +114,6 @@ workflows:
           requires:
             - create-infrastructure
             - collect-hosts-to-configure
+      - smoke-test:
+          requires:
+            - configure_infrastructure
