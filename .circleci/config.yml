@@ -52,7 +52,7 @@ jobs:
       - run:
           name: "collect hosts IPs"
           command: |
-            sleep 130
+            # sleep 130
             echo "[WEB]" > ~/inventory.txt
             aws ec2 describe-instances --query 'Reservations[*].Instances[*].PublicIpAddress' --output text >> ~/inventory.txt
             cat ~/inventory.txt
@@ -86,15 +86,16 @@ jobs:
 
   smoke-test:
     docker:
-      - image: alpine:latest
+      - image: python:3.7-alpine3.11
     steps:
       - attach_workspace:
           at: ~/
       - run: apk add --update curl
+      - run: pip install awscli
       - run:
           name: Test Site
           command: |
-            if cat ~/inventory.txt | tail -1 | xargs curl -s --head | head -1 | grep 200
+            if cat ~/inventory.txt | tail -1 | xargs curl -s --head | head -1 | grep 200 
             then 
               return 0
             else
