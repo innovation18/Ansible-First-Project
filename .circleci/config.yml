@@ -4,28 +4,28 @@ commands:
   create-stack:
     description: This command is to create-stack
     parameters:
-      # file-name:
-      #   type: string
-      # parameter-file-name:
-      #   type: string
+      file-name:
+        type: string
+      parameter-file-name:
+        type: string
     steps:
-      # - run: aws cloudformation create-stack
-      #     --stack-name phoenix-${CIRCLE_WORKFLOW_ID}
-      #     --template-body file://<< parameters.file-name >>
-      #     --parameters file://<< parameters.parameter-file-name >>
-      #     --region=us-west-2
-      - run: aws cloudformation deploy
-          --template-file public-ec2-instance.yml
-          --stack-name backend-${CIRCLE_WORKFLOW_ID}
-          --parameter-overrides $(cat params.properties)
+      - run: aws cloudformation create-stack
+          --stack-name phoenix-${CIRCLE_WORKFLOW_ID:0:7}
+          --template-body file://<< parameters.file-name >>
+          --parameters file://<< parameters.parameter-file-name >>
           --region=us-west-2
+      # - run: aws cloudformation deploy
+      #     --template-file public-ec2-instance.yml
+      #     --stack-name backend-${CIRCLE_WORKFLOW_ID:0:7}
+      #     --parameter-overrides $(cat params.properties)
+      #     --region=us-west-2
 
   destroy-stack:
     steps:
       - run:
           when: on_fail
           command: |
-            aws cloudformation delete-stack --stack-name phoenix-${CIRCLE_WORKFLOW_ID}
+            aws cloudformation delete-stack --stack-name phoenix-${CIRCLE_WORKFLOW_ID:0:7}
 
 jobs:
   create-infrastructure:
@@ -38,10 +38,10 @@ jobs:
           command: |
             apk add --update curl
             pip install awscli
-      # - create-stack:
-      #     file-name: public-ec2-instance.yml
-      #     # parameter-file-name: params.json
-      - create-stack
+      - create-stack:
+          file-name: public-ec2-instance.yml
+          parameter-file-name: params.json
+      # - create-stack
 
   collect-hosts-to-configure:
     docker:
@@ -55,9 +55,9 @@ jobs:
       - run:
           name: Collect HOST IPs
           command: |
-            # sleep 130
+            sleep 80
             echo "[WEB]" > ~/inventory.txt
-            # aws cloudformation describe-stacks --stack-name phoenix-${CIRCLE_WORKFLOW_ID} --profile phoenix | grep "StackStatus" | awk -F':' '{print $2}' |  awk '{ print substr( $0, 1, length($0)-1 ) }'
+            aws cloudformation describe-stacks --stack-name phoenix-${CIRCLE_WORKFLOW_ID:0:7} --profile phoenix | grep "StackStatus" | awk -F':' '{print $2}' |  awk '{ print substr( $0, 1, length($0)-1 ) }'
             aws ec2 describe-instances --query 'Reservations[*].Instances[*].PublicIpAddress' --output text >> ~/inventory.txt
             cat ~/inventory.txt
       - persist_to_workspace:
