@@ -34,9 +34,9 @@ jobs:
     steps:
       - checkout
       - run:
-        command: |
-          pip install jq
-          pip install awscli
+          command: |
+            pip install jq
+            pip install awscli
 
   # create-infrastructure:
   #   docker:
