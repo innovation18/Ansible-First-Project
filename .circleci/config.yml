@@ -4,8 +4,8 @@ commands:
   create-stack:
     description: This command is to create-stack
     parameters:
-      file-name:
-        type: string
+      # file-name:
+      #   type: string
       # parameter-file-name:
       #   type: string
     steps:
@@ -15,9 +15,9 @@ commands:
       #     --parameters file://<< parameters.parameter-file-name >>
       #     --region=us-west-2
       - run: aws cloudformation deploy
-          --template-file file://<< parameters.file-name >>
+          --template-file public-ec2-instance.yml
           --stack-name backend-${CIRCLE_WORKFLOW_ID}
-          --parameter-overrides $(cat params.properties) --no-execute-changeset
+          --parameter-overrides $(cat params.properties)
           --region=us-west-2
 
   destroy-stack:
@@ -38,9 +38,10 @@ jobs:
           command: |
             apk add --update curl
             pip install awscli
-      - create-stack:
-          file-name: public-ec2-instance.yml
-          # parameter-file-name: params.json
+      # - create-stack:
+      #     file-name: public-ec2-instance.yml
+      #     # parameter-file-name: params.json
+      - create-stack
 
   collect-hosts-to-configure:
     docker:
