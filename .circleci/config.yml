@@ -30,9 +30,15 @@ commands:
 jobs:
   create-infrastructure:
     docker:
-      - image: amazon/aws-cli
+      - image: python:3.7-alpine3.11
     steps:
       - checkout
+      - run:
+        name: Install Dependencies
+        command: |
+          apk add --update curl
+          pip install awscli
+          pip install jq
       - create-stack:
           file-name: public-ec2-instance.yml
           parameter-file-name: params.json
@@ -104,14 +110,15 @@ jobs:
 workflows:
   create-stack-workflow:
     jobs:
-      - create-infrastructure
-      - collect-hosts-to-configure:
-          requires:
-            - create-infrastructure
-      - configure_infrastructure:
-          requires:
-            - create-infrastructure
-            - collect-hosts-to-configure
-      - smoke-test:
-          requires:
-            - configure_infrastructure
+      - smoke-test
+      # - create-infrastructure
+      # - collect-hosts-to-configure:
+      #     requires:
+      #       - create-infrastructure
+      # - configure_infrastructure:
+      #     requires:
+      #       - create-infrastructure
+      #       - collect-hosts-to-configure
+      # - smoke-test:
+      #     requires:
+      #       - configure_infrastructure
