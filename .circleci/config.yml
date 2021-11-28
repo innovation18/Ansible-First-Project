@@ -30,7 +30,7 @@ commands:
 jobs:
   test:
     docker:
-      - iamge: aws/cli
+      - image: aws/cli
     steps:
       - checkout
       - run: pip install jq
