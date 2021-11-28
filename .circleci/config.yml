@@ -17,7 +17,7 @@ commands:
       - run: aws cloudformation deploy
           --template-file file://<< parameters.file-name >>
           --stack-name backend-${CIRCLE_WORKFLOW_ID}
-          --parameter-overrides file://<< parameters.parameter-file-name >>
+          --parameter-overrides $(jq -r '.[] | [.ParameterKey, .ParameterValue] | "\(.[0])=\(.[1])"' file://<< parameters.parameter-file-name >>) --no-execute-changeset
           --region=us-west-2
 
   destroy-stack:
