@@ -57,7 +57,8 @@ jobs:
           command: |
             sleep 80
             echo "[WEB]" > ~/inventory.txt
-            aws cloudformation describe-stacks --stack-name phoenix-${CIRCLE_WORKFLOW_ID:0:7} --profile phoenix | grep "StackStatus" | awk -F':' '{print $2}' |  awk '{ print substr( $0, 1, length($0)-1 ) }'
+            response = `aws cloudformation describe-stacks --stack-name phoenix-${CIRCLE_WORKFLOW_ID:0:7} | grep "StackStatus" | awk -F':' '{print $2}' |  awk '{ print substr( $0, 1, length($0)-1 ) }'`
+            echo $response
             aws ec2 describe-instances --query 'Reservations[*].Instances[*].PublicIpAddress' --output text >> ~/inventory.txt
             cat ~/inventory.txt
       - persist_to_workspace:
