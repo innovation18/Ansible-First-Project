@@ -30,10 +30,14 @@ commands:
 jobs:
   test:
     docker:
-      - image: amazon/aws-cli
+      - image: python:3.7-alpine3.11
     steps:
       - checkout
-      - run: pip install jq
+      - run:
+        command: |
+          pip install jq
+          pip install awscli
+
   # create-infrastructure:
   #   docker:
   #     - image: python:3.7-alpine3.11
