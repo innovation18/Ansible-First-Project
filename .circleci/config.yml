@@ -110,15 +110,14 @@ jobs:
 workflows:
   create-stack-workflow:
     jobs:
-      - smoke-test
-      # - create-infrastructure
-      # - collect-hosts-to-configure:
-      #     requires:
-      #       - create-infrastructure
-      # - configure_infrastructure:
-      #     requires:
-      #       - create-infrastructure
-      #       - collect-hosts-to-configure
-      # - smoke-test:
-      #     requires:
-      #       - configure_infrastructure
+      - create-infrastructure
+      - collect-hosts-to-configure:
+          requires:
+            - create-infrastructure
+      - configure_infrastructure:
+          requires:
+            - create-infrastructure
+            - collect-hosts-to-configure
+      - smoke-test:
+          requires:
+            - configure_infrastructure
