@@ -17,7 +17,6 @@ commands:
       - run: aws cloudformation deploy
           --template-file file://<< parameters.file-name >>
           --stack-name backend-${CIRCLE_WORKFLOW_ID}
-          # --parameter-overrides $(jq -r '.[] | [.ParameterKey, .ParameterValue] | "\(.[0])=\(.[1])"' file://<< parameters.parameter-file-name >>) --no-execute-changeset
           --parameter-overrides $(cat params.properties) --no-execute-changeset
           --region=us-west-2
 
@@ -39,7 +38,6 @@ jobs:
           command: |
             apk add --update curl
             pip install awscli
-            pip install jq
       - create-stack:
           file-name: public-ec2-instance.yml
           # parameter-file-name: params.json
