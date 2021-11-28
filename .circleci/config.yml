@@ -34,11 +34,11 @@ jobs:
     steps:
       - checkout
       - run:
-        name: Install Dependencies
-        command: |
-          apk add --update curl
-          pip install awscli
-          pip install jq
+          name: Install Dependencies
+          command: |
+            apk add --update curl
+            pip install awscli
+            pip install jq
       - create-stack:
           file-name: public-ec2-instance.yml
           parameter-file-name: params.json
